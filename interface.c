@@ -1673,7 +1673,7 @@ struct command commands[MAX_COMMANDS_SIZE] = {
   {"chat_info", {ca_chat, ca_none}, do_chat_info, "chat_info <chat>\tPrints info about chat (id, members, admin, etc.)", NULL},
   {"chat_set_photo", {ca_chat, ca_file_name_end, ca_none}, do_chat_set_photo, "chat_set_photo <chat> <filename>\tSets chat photo. Photo will be cropped to square", NULL},
   {"chat_upgrade", {ca_chat, ca_none}, do_chat_upgrade, "chat_upgrade <chat>\tUpgrades chat to megagroup", NULL},
-  {"chat_with_peer", {ca_peer, ca_none}, do_chat_with_peer, "chat_with_peer <peer>\tInterface option. All input will be treated as messages to this peer. Type /quit to end this mode", NULL},
+  {"chat", {ca_peer, ca_none}, do_chat_with_peer, "chat <peer>\tInterface option. All input will be treated as messages to this peer. Type /quit to end this mode", NULL},
   {"clear", {ca_none}, do_clear, "clear\tClears all data and exits. For debug.", NULL},
   {"contact_list", {ca_none}, do_contact_list, "contact_list\tPrints contact list", NULL},
   {"contact_search", {ca_string, ca_none}, do_resolve_username, "contact_search username\tSearches user by username", NULL},
@@ -2863,6 +2863,9 @@ void interpreter_chat_mode (char *line) {
     tgl_do_get_history (TLS, chat_mode_id, 0, limit, offline_mode, print_msg_list_gw, 0);
     return;
   }
+  
+  if (!strncmp (line, "dialog_list", 11)) { return; }
+
   if (!strncmp (line, "/read", 5)) {
     tgl_do_mark_read (TLS, chat_mode_id, 0, 0);
     return;
@@ -3371,13 +3374,13 @@ void user_status_upd (struct tgl_state *TLS, struct tgl_user *U) {
   mprint_start (ev);
   if (!enable_json)
   {
-    mpush_color (ev, COLOR_YELLOW);
-    mprintf (ev, "User ");
-    print_user_name(ev, U->id, (void *) U);
-    mprintf (ev, " ");
-    print_user_status(&U->status, ev);
-    mprintf (ev, "\n");
-    mpop_color (ev);
+//    mpush_color (ev, COLOR_YELLOW);
+//    mprintf (ev, "User ");
+//    print_user_name(ev, U->id, (void *) U);
+//    mprintf (ev, " ");
+//    print_user_status(&U->status, ev);
+//    mprintf (ev, "\n");
+//    mpop_color (ev);
   } else {
     #ifdef USE_JSON
       json_t *res = json_pack_user_status(U);
