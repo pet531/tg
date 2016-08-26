@@ -2849,7 +2849,7 @@ void print_dialog_list_gw (struct tgl_state *TLSR, void *extra, int success, int
   mprint_end (ev);
 }
 
-void interpreter_chat_mode (char *line) {
+void interpreter_chat_mode (char *line, void *ex) {
   if (line == NULL || /* EOF received */
           !strncmp (line, "/exit", 5) || !strncmp (line, "/quit", 5)) {
     in_chat_mode = 0;
@@ -2864,7 +2864,13 @@ void interpreter_chat_mode (char *line) {
     return;
   }
   
-  if (!strncmp (line, "dialog_list", 11)) { return; }
+  if (!strncmp (line, "dialog_list", 11)) {
+    in_chat_mode = 0;
+    in_readline = 0;
+    interpreter_ex("dialog_list", ex);
+    in_chat_mode = 1;
+    return; 
+  }
 
   if (!strncmp (line, "/read", 5)) {
     tgl_do_mark_read (TLS, chat_mode_id, 0, 0);
@@ -3429,7 +3435,7 @@ void interpreter_ex (char *line, void *ex) {
   assert (!in_readline);
   in_readline = 1;
   if (in_chat_mode) {
-    interpreter_chat_mode (line);
+    interpreter_chat_mode (line, ex);
     in_readline = 0;
     return;
   }
