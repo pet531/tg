@@ -638,6 +638,7 @@ char *in_chat_commands[] = {
   "/quit",
   "/history",
   "/read",
+  "/view", 
   0
 };
 
@@ -2850,12 +2851,14 @@ void print_dialog_list_gw (struct tgl_state *TLSR, void *extra, int success, int
 }
 
 void interpreter_chat_mode (char *line, void *ex) {
+  char* cut_line;
   if (line == NULL || /* EOF received */
           !strncmp (line, "/exit", 5) || !strncmp (line, "/quit", 5)) {
     in_chat_mode = 0;
     update_prompt ();
     return;
   }
+
   if (!strncmp (line, "/history", 8)) {
     int limit = 40;
     sscanf (line, "/history %99d", &limit);
@@ -2868,6 +2871,15 @@ void interpreter_chat_mode (char *line, void *ex) {
     in_chat_mode = 0;
     in_readline = 0;
     interpreter_ex("dialog_list", ex);
+    in_chat_mode = 1;
+    return; 
+  }
+
+  if (!strncmp (line, "/view", 5)) {
+    in_chat_mode = 0;
+    in_readline = 0;
+    cut_line = line + 1;
+    interpreter_ex(cut_line, ex);
     in_chat_mode = 1;
     return; 
   }
